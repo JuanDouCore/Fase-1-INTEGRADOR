@@ -72,6 +72,7 @@ public class Menu {
      * de listar peliculas
      */
     private void menuListarPeliculas() {
+        Scanner scanner = new Scanner(System.in);
         PeliculaService peliculaService = new PeliculaService();
 
         println("\n\n\n");
@@ -80,6 +81,9 @@ public class Menu {
         println("CODIGO | TITULO | URL");
         peliculaService.listarTodasPeliculas().forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo() + " | " + pelicula.getUrl()));
         println("====================================");
+        System.out.println("Pulse una letra para continuar..");
+        scanner.next();
+        scanner.close();
     }
 
     /**
