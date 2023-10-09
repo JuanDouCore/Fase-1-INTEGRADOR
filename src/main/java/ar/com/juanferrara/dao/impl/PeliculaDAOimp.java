@@ -139,11 +139,25 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Elimina una pelicula por el codigo
-     * @param key
+     * @param codigo
      */
     @Override
-    public void eliminar(Integer key) {
+    public void eliminar(Integer codigo) {
+        Connection connection = getConnection();
 
+        String sentenceSQL = "DELETE FROM peliculas WHERE codigo = ?;";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+            preparedStatement.setInt(1, codigo);
+
+            preparedStatement.execute();
+            eliminarGenerosDePelicula(codigo, connection);
+
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -240,6 +254,25 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.execute();
 
             insertarGenerosDePelicula(generos, codigoPelicula, connection);
+
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Elimina todos los generos de una pelicula
+     * @param codigoPelicula
+     * @param connection
+     */
+    private void eliminarGenerosDePelicula(int codigoPelicula, Connection connection) {
+        String deleteGenerosSQL = "DELETE FROM generos_peliculas WHERE codigo_pelicula = codigoPelicula;";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteGenerosSQL);
+
+            preparedStatement.execute();
 
             preparedStatement.close();
         } catch (SQLException ex) {
