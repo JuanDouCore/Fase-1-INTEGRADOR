@@ -4,8 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Interfaz que sirve para implementar y utilizar el acceso a una conexion a
+ * SQL mediante MySQL
+ */
 public interface MySQLImplement {
 
+    /**
+     * Metodo para instanciar la conexion con la base de datos mysql
+     * @return Retorna la Connection instanciada y creada
+     */
     default Connection getConnection() {
         Connection connection = null;
 
