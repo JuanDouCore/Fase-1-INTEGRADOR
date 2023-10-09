@@ -58,7 +58,13 @@ public class Menu {
      * del menu principal
      */
     private void mostrarMenuPrincipal() {
-
+        println("====================================");
+        println("[1] - Crear una pelicula");
+        println("[2] - Eliminar una pelicula");
+        println("[3] - Modificar una pelicula");
+        println("[4] - Buscar una pelicula");
+        println("[5] - Listar peliculas");
+        println("====================================");
     }
 
     /**
