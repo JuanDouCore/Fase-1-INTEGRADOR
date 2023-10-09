@@ -3,7 +3,13 @@ package ar.com.juanferrara.dao.impl;
 import ar.com.juanferrara.dao.DAO;
 import ar.com.juanferrara.dao.MySQLImplement;
 import ar.com.juanferrara.model.domain.Pelicula;
+import ar.com.juanferrara.model.util.ArchivosConverter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +26,55 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
      */
     @Override
     public Pelicula buscar(Integer key) {
-        return null;
+        Pelicula pelicula = null;
+
+        Connection connection = getConnection();
+
+        String sentenceSQL = "SELECT * FROM peliculas WHERE codigo = ?;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+            preparedStatement.setInt(1, key);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()) {
+                int codigo = resultSet.getInt("codigo");
+                String titulo = resultSet.getString("titulo");
+                String url = resultSet.getString("url");
+                File imagen = new File("D:" + File.separator + "Archivos" + File.separator + titulo + ".jpg" );
+
+                Blob imagenBlob = resultSet.getBlob("imagen");
+                InputStream inputStream = imagenBlob.getBinaryStream();
+                ArchivosConverter.convertirInputStreamToFile(inputStream, imagen);
+
+
+                String generosSQL = "SELECT genero FROM generos_pelicula WHERE codigo_pelicula = ?;";
+                PreparedStatement generosStatement = connection.prepareStatement(generosSQL);
+                generosStatement.setInt(1, codigo);
+
+                ResultSet generosResultSet = generosStatement.executeQuery();
+
+                List<String> generos = new ArrayList<>();
+
+                while (generosResultSet.next()) {
+                    String genero = generosResultSet.getString("genero");
+                    generos.add(genero);
+                }
+                generosResultSet.close();
+                generosStatement.close();
+
+                pelicula = new Pelicula(codigo, titulo, url, imagen, generos);
+
+                resultSet.close();
+                preparedStatement.close();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException | FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return pelicula;
     }
 
     /**
