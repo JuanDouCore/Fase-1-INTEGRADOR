@@ -203,4 +203,20 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             ex.printStackTrace();
         }
     }
+
+    private void modificarGenerosDePelicula(List<String> generos, int codigoPelicula, Connection connection) {
+        String deleteGenerosSQL = "DELETE FROM generos_peliculas WHERE codigo_pelicula = codigoPelicula;";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(deleteGenerosSQL);
+
+            preparedStatement.execute();
+
+            insertarGenerosDePelicula(generos, codigoPelicula, connection);
+
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
