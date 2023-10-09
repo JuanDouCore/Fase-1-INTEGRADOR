@@ -204,11 +204,45 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Lista todas las peliculas filtradas por un titulo
-     * @param titulo
+     * @param tituloDeBusqueda
      * @return peliculas
      */
-    public List<Pelicula> listarTodosPorTitulo(String titulo) {
-        return null;
+    public List<Pelicula> listarTodosPorTitulo(String tituloDeBusqueda) {
+        List<Pelicula> peliculas = new ArrayList<>();
+
+        Connection connection = getConnection();
+
+        String sentenceSQL = "SELECT * FROM peliculas;";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+            preparedStatement.setString(1, tituloDeBusqueda);
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+
+            while (resultSet.next()) {
+                int codigo = resultSet.getInt("codigo");
+                String titulo = resultSet.getString("titulo");
+                String url = resultSet.getString("url");
+                /*en este caso se omitio crear el archivo para el listarTodos
+                por una cuestión de optización, será más util luego llamar a una pelicula
+                por su buscar() y ahi si obtener toda su estructura
+                */
+
+                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
+
+
+                peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
+
+                resultSet.close();
+                preparedStatement.close();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return peliculas;
     }
 
     /**
