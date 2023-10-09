@@ -42,26 +42,14 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
                 File imagen = new File("D:" + File.separator + "Archivos" + File.separator + titulo + ".jpg" );
+                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
 
                 Blob imagenBlob = resultSet.getBlob("imagen");
                 InputStream inputStream = imagenBlob.getBinaryStream();
                 ArchivosConverter.convertirInputStreamToFile(inputStream, imagen);
 
 
-                String generosSQL = "SELECT genero FROM generos_pelicula WHERE codigo_pelicula = ?;";
-                PreparedStatement generosStatement = connection.prepareStatement(generosSQL);
-                generosStatement.setInt(1, codigo);
 
-                ResultSet generosResultSet = generosStatement.executeQuery();
-
-                List<String> generos = new ArrayList<>();
-
-                while (generosResultSet.next()) {
-                    String genero = generosResultSet.getString("genero");
-                    generos.add(genero);
-                }
-                generosResultSet.close();
-                generosStatement.close();
 
                 pelicula = new Pelicula(codigo, titulo, url, imagen, generos);
 
@@ -129,5 +117,63 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
      */
     public List<Pelicula> listarTodosPorGenero(String genero) {
         return null;
+    }
+
+
+    /**
+     * Devuelve una lista de todos los generos de una Pelicula
+     * @param codigo
+     * @param connection
+     * @return
+     */
+    private List<String> obtenerGenerosDePelicula(int codigo, Connection connection) {
+        List<String> generos = new ArrayList<>();
+
+        String generosSQL = "SELECT genero FROM generos_pelicula WHERE codigo_pelicula = ?;";
+
+        try {
+            PreparedStatement generosStatement = connection.prepareStatement(generosSQL);
+            generosStatement.setInt(1, codigo);
+
+            ResultSet generosResultSet = generosStatement.executeQuery();
+
+            while (generosResultSet.next()) {
+                String genero = generosResultSet.getString("genero");
+                generos.add(genero);
+            }
+
+            generosResultSet.close();
+            generosStatement.close();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return generos;
+    }
+
+    /**
+     * Inserta en otra tabla los generos especificos que tiene una pelicula
+     * @param generos
+     * @param codigoPelicula
+     * @param connection
+     */
+    private void insertarGenerosDePelicula(List<String> generos, int codigoPelicula, Connection connection) {
+        String insertGenerosSQL = "INSERT INTO GenerosPeliculas (codigo_pelicula, genero) VALUES (?, ?);";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(insertGenerosSQL);
+
+            for (String genero : generos) {
+                preparedStatement.setString(1, genero);
+                preparedStatement.setInt(2, codigoPelicula);
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }
