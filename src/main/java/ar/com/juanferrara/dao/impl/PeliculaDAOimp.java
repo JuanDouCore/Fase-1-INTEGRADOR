@@ -166,7 +166,40 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
      */
     @Override
     public List<Pelicula> listarTodos() {
-        return null;
+        List<Pelicula> peliculas = new ArrayList<>();
+
+        Connection connection = getConnection();
+
+        String sentenceSQL = "SELECT * FROM peliculas;";
+        try {
+            Statement preparedStatement = connection.createStatement();
+
+            ResultSet resultSet = preparedStatement.executeQuery(sentenceSQL);
+
+            while (resultSet.next()) {
+                int codigo = resultSet.getInt("codigo");
+                String titulo = resultSet.getString("titulo");
+                String url = resultSet.getString("url");
+                /*en este caso se omitio crear el archivo para el listarTodos
+                por una cuestión de optización, será más util luego llamar a una pelicula
+                por su buscar() y ahi si obtener toda su estructura
+                */
+
+                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
+
+
+                peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
+
+                resultSet.close();
+                preparedStatement.close();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return peliculas;
     }
 
     /**
