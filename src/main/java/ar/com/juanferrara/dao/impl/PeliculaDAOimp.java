@@ -6,6 +6,7 @@ import ar.com.juanferrara.model.domain.Pelicula;
 import ar.com.juanferrara.model.util.ArchivosConverter;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.*;
@@ -67,11 +68,37 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Inserta una pelicula
-     * @param entity
+     * @param pelicula
      */
     @Override
-    public void insertar(Pelicula entity) {
+    public void insertar(Pelicula pelicula) {
+        Connection connection = getConnection();
 
+        String sentenceSQL = "INSERT INTO peliculas (titulo, url, imagen) VALUES (?, ?, ?);";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+
+            FileInputStream fileInputStream = new FileInputStream(pelicula.getImagen());
+
+            preparedStatement.setString(1, pelicula.getTitulo());
+            preparedStatement.setString(2, pelicula.getUrl());
+            preparedStatement.setBlob(3, fileInputStream);
+
+            if(preparedStatement.executeUpdate() == 1) {
+                ResultSet resultSet = preparedStatement.getResultSet();
+
+                insertarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+
+                resultSet.close();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
