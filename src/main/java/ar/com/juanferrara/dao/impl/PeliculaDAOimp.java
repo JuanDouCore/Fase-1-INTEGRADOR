@@ -162,6 +162,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Lista todas las peliculas
+     * (No retorna la Imagen por cuestion de optimidad)
      * @return
      */
     @Override
@@ -170,7 +171,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
         Connection connection = getConnection();
 
-        String sentenceSQL = "SELECT * FROM peliculas;";
+        String sentenceSQL = "SELECT codigo, titulo, url FROM peliculas;";
         try {
             Statement preparedStatement = connection.createStatement();
 
@@ -180,10 +181,6 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 int codigo = resultSet.getInt("codigo");
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
-                /*en este caso se omitio crear el archivo para el listarTodos
-                por una cuestión de optización, será más util luego llamar a una pelicula
-                por su buscar() y ahi si obtener toda su estructura
-                */
 
                 List<String> generos = obtenerGenerosDePelicula(codigo, connection);
 
@@ -204,6 +201,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Lista todas las peliculas filtradas por un titulo
+     * (No retorna la Imagen por cuestion de optimidad)
      * @param tituloDeBusqueda
      * @return peliculas
      */
@@ -212,7 +210,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
         Connection connection = getConnection();
 
-        String sentenceSQL = "SELECT * FROM peliculas;";
+        String sentenceSQL = "SELECT codigo, titulo, url FROM peliculas;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
             preparedStatement.setString(1, tituloDeBusqueda);
@@ -223,13 +221,8 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 int codigo = resultSet.getInt("codigo");
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
-                /*en este caso se omitio crear el archivo para el listarTodos
-                por una cuestión de optización, será más util luego llamar a una pelicula
-                por su buscar() y ahi si obtener toda su estructura
-                */
 
                 List<String> generos = obtenerGenerosDePelicula(codigo, connection);
-
 
                 peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
 
@@ -247,11 +240,45 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Lista todas las peliculas filtradas por su genero
+     * (No retorna la imagen Por cuestion de optimidad)
      * @param genero
      * @return peliculas
      */
     public List<Pelicula> listarTodosPorGenero(String genero) {
-        return null;
+        List<Pelicula> peliculas = new ArrayList<>();
+
+        Connection connection = getConnection();
+
+        String sentenceSQL = "SELECT p.codigo, p.titulo, p.url " +
+                "FROM peliculas p " +
+                "INNER JOIN generos_pelicula gp ON p.codigo = gp.codigo_pelicula " +
+                "WHERE gp.genero = ?;";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+            preparedStatement.setString(1, genero);
+
+            ResultSet resultSet = preparedStatement.getResultSet();
+
+            while (resultSet.next()) {
+                int codigo = resultSet.getInt("codigo");
+                String titulo = resultSet.getString("titulo");
+                String url = resultSet.getString("url");
+
+                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
+
+                peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
+
+                resultSet.close();
+                preparedStatement.close();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return peliculas;
     }
 
 
