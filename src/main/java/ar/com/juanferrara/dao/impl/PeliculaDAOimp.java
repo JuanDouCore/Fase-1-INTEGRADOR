@@ -103,11 +103,38 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
     /**
      * Modifica una pelicula
-     * @param entity
+     * @param pelicula
      */
     @Override
-    public void modificar(Pelicula entity) {
+    public void modificar(Pelicula pelicula) {
+        Connection connection = getConnection();
 
+        String sentenceSQL = "UPDATE peliculas SET titulo = ?, url = ?, imagen = ? WHERE codigo = ?;";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+
+            FileInputStream fileInputStream = new FileInputStream(pelicula.getImagen());
+
+            preparedStatement.setString(1, pelicula.getTitulo());
+            preparedStatement.setString(2, pelicula.getUrl());
+            preparedStatement.setBlob(3, fileInputStream);
+            preparedStatement.setInt(4, pelicula.getCodigo());
+
+            if(preparedStatement.executeUpdate() == 1) {
+                ResultSet resultSet = preparedStatement.getResultSet();
+
+                modificarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+
+                resultSet.close();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
