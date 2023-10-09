@@ -72,6 +72,14 @@ public class Menu {
      * de listar peliculas
      */
     private void menuListarPeliculas() {
+        PeliculaService peliculaService = new PeliculaService();
+
+        println("\n\n\n");
+        println("====================================");
+        println("Listando peliculas...");
+        println("CODIGO | TITULO | URL");
+        peliculaService.listarTodasPeliculas().forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo() + " | " + pelicula.getUrl()));
+        println("====================================");
     }
 
     /**
