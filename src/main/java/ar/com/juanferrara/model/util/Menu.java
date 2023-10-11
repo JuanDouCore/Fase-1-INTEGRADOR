@@ -1,5 +1,8 @@
 package ar.com.juanferrara.model.util;
 
+import ar.com.juanferrara.model.domain.Pelicula;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -91,6 +94,95 @@ public class Menu {
      * de busqueda de peliculas
      */
     private void menuBuscarPelicula() {
+        Scanner scanner = new Scanner(System.in);
+        PeliculaService peliculaService = new PeliculaService();
+
+        println("\n\n\n");
+        println("====================================");
+        println("¿Por que criterio desea buscar?");
+        println("[1] - Por titulo");
+        println("[2] - Por genero");
+        println("====================================");
+
+        String valor = "";
+        boolean ingresoOpcionCorrecta = false;
+        int opcion = 1;
+        do {
+            System.out.print("Ingrese una opcion: ");
+            try {
+                opcion = scanner.nextInt();
+                if(opcion == 1) {
+                    println("\n");
+                    System.out.print("Ingrese el titulo: ");
+                    valor = scanner.nextLine();
+
+                    ingresoOpcionCorrecta = true;
+                } else {
+                    println("\n");
+                    System.out.print("Ingrese el genero: ");
+                    valor = scanner.next();
+
+                    ingresoOpcionCorrecta = true;
+                }
+            } catch (InputMismatchException ignored) {}
+        } while (!ingresoOpcionCorrecta);
+
+        if (opcion == 1) {
+            println("====================================");
+            println("Listado peliculas que coincidan con el titulo : " + valor);
+            if(!peliculaService.buscarPorCriterio("TITULO",valor).isEmpty()) {
+                peliculaService.buscarPorCriterio("TITULO",valor).forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo()));
+            } else {
+                println("No se encontraron peliculas con este titulo.");
+            }
+            println("====================================");
+        } else if(opcion == 2) {
+            println("====================================");
+            println("Listado peliculas que coincidan con el genero : " + valor);
+            if(!peliculaService.buscarPorCriterio("GENERO",valor).isEmpty()) {
+                peliculaService.buscarPorCriterio("GENERO",valor).forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo()));
+            } else {
+                println("No se encontraron peliculas con este genero.");
+            }
+            println("====================================");
+        }
+
+        println("\n");
+        println("Desea ver la informacion de una pelicula?");
+
+        String opcionDeseaBuscar = "no";
+        boolean opcionCorrectaDeseaBuscar = false;
+        do {
+            System.out.print("Ingrese si/no: ");
+            opcionDeseaBuscar = scanner.next();
+            if(opcionDeseaBuscar == "si" || opcionDeseaBuscar == "no")
+                opcionCorrectaDeseaBuscar = true;
+        } while (!opcionCorrectaDeseaBuscar);
+
+        if(opcionDeseaBuscar == "si") {
+            boolean codigoCorrectoPeliculaBuscar = false;
+            do {
+                println("\n");
+                System.out.print("Ingrese codigo: ");
+                try {
+                    int codigoPelicula = scanner.nextInt();
+
+                    Pelicula pelicula = peliculaService.mostrarPelicula(codigoPelicula);
+                    if(pelicula != null) {
+                        println("CODIGO: " + pelicula.getCodigo());
+                        println("TITULO: " + pelicula.getTitulo());
+                        println("URL: " + pelicula.getUrl());
+                        println("IMAGEN ALOJADA EN: " + pelicula.getImagen().getPath());
+                    } else {
+                        println("No existe pelicula con este codigo:");
+                    }
+                } catch (InputMismatchException ignored) {}
+            } while (!codigoCorrectoPeliculaBuscar);
+        }
+
+        println("\n\n Pulse una letra para continuar...");
+        scanner.next();
+        scanner.close();
     }
 
     /**
