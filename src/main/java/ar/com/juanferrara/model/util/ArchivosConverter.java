@@ -8,6 +8,12 @@ import java.io.*;
 public class ArchivosConverter {
 
     /**
+     * Constante de utilidad para definir la ruta donde
+     * se guardaran las imagenes
+     */
+    public static final String RUTA_DE_ARCHIVOS = "D:" + File.separator + "Archivos" + File.separator;
+
+    /**
      * Metodo que en base al InputStream que recibe en bytes lo mapea y escribe
      * sobre un File para convertirlo en el archivo con sus respectivos bytes
      * @param inputStream

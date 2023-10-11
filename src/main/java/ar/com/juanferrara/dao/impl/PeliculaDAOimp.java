@@ -42,7 +42,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 int codigo = resultSet.getInt("codigo");
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
-                File imagen = new File("D:" + File.separator + "Archivos" + File.separator + titulo + ".jpg" );
+                File imagen = new File(ArchivosConverter.RUTA_DE_ARCHIVOS + titulo + ".jpg" );
                 List<String> generos = obtenerGenerosDePelicula(codigo, connection);
 
                 Blob imagenBlob = resultSet.getBlob("imagen");
