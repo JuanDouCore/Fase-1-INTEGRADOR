@@ -83,7 +83,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
         String sentenceSQL = "INSERT INTO peliculas (titulo, url, imagen) VALUES (?, ?, ?);";
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL, Statement.RETURN_GENERATED_KEYS);
 
             FileInputStream fileInputStream = new FileInputStream(pelicula.getImagen());
 
@@ -127,7 +127,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
         String sentenceSQL = "UPDATE peliculas SET titulo = ?, url = ?, imagen = ? WHERE codigo = ?;";
 
         try {
-            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
+            PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL, Statement.RETURN_GENERATED_KEYS);
 
             FileInputStream fileInputStream = new FileInputStream(pelicula.getImagen());
 
