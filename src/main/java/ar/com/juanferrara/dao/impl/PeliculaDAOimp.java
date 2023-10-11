@@ -91,10 +91,13 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.setString(2, pelicula.getUrl());
             preparedStatement.setBlob(3, fileInputStream);
 
-            if(preparedStatement.executeUpdate() == 1) {
-                ResultSet resultSet = preparedStatement.getResultSet();
 
-                insertarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+            if(preparedStatement.executeUpdate() == 1) {
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+                if(resultSet.next())
+                    insertarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+
 
                 resultSet.close();
             }
@@ -134,9 +137,10 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.setInt(4, pelicula.getCodigo());
 
             if(preparedStatement.executeUpdate() == 1) {
-                ResultSet resultSet = preparedStatement.getResultSet();
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
-                modificarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+                if(resultSet.next())
+                    modificarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
 
                 resultSet.close();
             }

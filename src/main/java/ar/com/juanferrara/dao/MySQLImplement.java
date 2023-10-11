@@ -20,7 +20,7 @@ public interface MySQLImplement {
         final String DRIVER = "com.mysql.cj.jdbc.Driver";
         final String USER = "root";
         final String PASSWORD = "";
-        final String URL = "jdbc:mysql://localhost:3306/cotizaciones";
+        final String URL = "jdbc:mysql://localhost:3306/peliculas";
 
         try {
             Class.forName(DRIVER);
