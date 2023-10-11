@@ -379,8 +379,9 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             PreparedStatement preparedStatement = connection.prepareStatement(insertGenerosSQL);
 
             for (String genero : generos) {
-                preparedStatement.setString(1, genero);
-                preparedStatement.setInt(2, codigoPelicula);
+
+                preparedStatement.setInt(1, codigoPelicula);
+                preparedStatement.setString(2, genero);
                 preparedStatement.addBatch();
             }
 
@@ -425,7 +426,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
      * @param connection
      */
     private void eliminarGenerosDePelicula(int codigoPelicula, Connection connection) {
-        String deleteGenerosSQL = "DELETE FROM generos_peliculas WHERE codigo_pelicula = codigoPelicula;";
+        String deleteGenerosSQL = "DELETE FROM generos_peliculas WHERE codigo_pelicula = "+codigoPelicula+";";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(deleteGenerosSQL);

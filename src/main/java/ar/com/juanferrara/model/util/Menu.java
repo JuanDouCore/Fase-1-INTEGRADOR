@@ -316,12 +316,12 @@ public class Menu {
             println("\n");
             try {
                 System.out.print("Ingrese el titulo: ");
-                scanner.nextLine();
+                titulo = scanner.nextLine();
 
                 println("\n");
 
                 System.out.print("Ingrese la URL: ");
-                scanner.next();
+                url = scanner.next();
 
                 println("\n");
 
