@@ -176,6 +176,7 @@ public class Menu {
                         println("CODIGO: " + pelicula.getCodigo());
                         println("TITULO: " + pelicula.getTitulo());
                         println("URL: " + pelicula.getUrl());
+                        println("GENEROS: " + pelicula.getGenerosConFormato());
                         println("IMAGEN ALOJADA EN: " + pelicula.getImagen().getPath());
                     } else {
                         println("No existe pelicula con este codigo:");
@@ -194,6 +195,71 @@ public class Menu {
      * para modificar una pelicula
      */
     private void menuModificarPelicula() {
+        Scanner scanner = new Scanner(System.in);
+        PeliculaService peliculaService = new PeliculaService();
+
+        println("\n\n\n");
+        println("====================================");
+        println("Ingrese el codigo de la pelicula que desea modificar");
+
+        int codigoPelicula = 0;
+        boolean ingresoCodigoCorrecto = false;
+        do {
+            System.out.print("codigo: ");
+            codigoPelicula = scanner.nextInt();
+        } while (!ingresoCodigoCorrecto);
+
+        Pelicula pelicula = peliculaService.mostrarPelicula(codigoPelicula);
+        if(pelicula!=null) {
+            boolean ingresoValoresCorrectamente = false;
+            do {
+                try {
+                    println("\n");
+
+                    println("Titulo actual: " + pelicula.getTitulo());
+                    System.out.print("Ingrese titulo nuevo: ");
+                    pelicula.setTitulo(scanner.nextLine());
+
+                    println("URL actual: " + pelicula.getUrl());
+                    System.out.print("Ingrese URL nueva: ");
+                    pelicula.setUrl(scanner.next());
+
+                    println("Generos actuales: " + pelicula.getGenerosConFormato());
+                    System.out.print("¿Cuantos generos tiene ahora la pelicula? ");
+                    List<String> generos = new ArrayList<>();
+                    int cantGeneros = scanner.nextInt();
+                    println("\n");
+                    for(int i = 0; i < cantGeneros; i++) {
+                        System.out.print("Ingrese genero #" + i + ": ");
+                        generos.add(scanner.next());
+                        println("\n");
+                    }
+                    pelicula.setGeneros(generos);
+
+                    println("Ahora coloque la imagen de la Pelicula en " + ArchivosConverter.RUTA_DE_ARCHIVOS);
+                    println("Una vez que la coloco ahi, escriba el nombre del archivo con su extension ejemplo mi_imagen.jpg");
+                    System.out.print("Nombre del archivo: ");
+                    File imagen = new File(ArchivosConverter.RUTA_DE_ARCHIVOS + scanner.next());
+                    if(!imagen.exists()) {
+                        println("La imagen que ingresaste no existe...");
+                    } else {
+                        pelicula.setImagen(imagen);
+                        ingresoValoresCorrectamente = true;
+                    }
+                } catch (InputMismatchException exception) {
+                    println("Ingresaste valores incorrectamente... Reintentalo");
+                }
+            } while (!ingresoValoresCorrectamente);
+
+            peliculaService.modificarPelicula(pelicula);
+            println("Pelicula modificada correctamente...");
+        } else {
+            println("No existe pelicula con este codigo...");
+        }
+
+        println("Pulse una letra para continuar...");
+        scanner.next();
+        scanner.close();
     }
 
     /**
