@@ -2,6 +2,7 @@ package ar.com.juanferrara.model.domain;
 
 import java.io.File;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class Pelicula {
     private int codigo;
@@ -59,5 +60,14 @@ public class Pelicula {
 
     public void setGeneros(List<String> generos) {
         this.generos = generos;
+    }
+
+    public String getGenerosConFormatoOracion() {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        for(String genero : generos) {
+            stringJoiner.add(genero);
+        }
+
+        return stringJoiner.toString();
     }
 }
