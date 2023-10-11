@@ -2,7 +2,11 @@ package ar.com.juanferrara.model.util;
 
 import ar.com.juanferrara.model.domain.Pelicula;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -204,6 +208,61 @@ public class Menu {
      * para crear peliculas
      */
     private void menuCrearPelicula() {
+        Scanner scanner = new Scanner(System.in);
+        PeliculaService peliculaService = new PeliculaService();
+
+        println("\n\n\n");
+        println("====================================");
+        println("Creando nueva pelicula...");
+
+        String titulo = "";
+        String url = "";
+        List<String> generos = new ArrayList<>();
+        File imagen = null;
+
+        boolean ingresoValoresCorrectamente = false;
+        do {
+            println("\n");
+            try {
+                System.out.print("Ingrese el titulo: ");
+                scanner.nextLine();
+
+                println("\n");
+
+                System.out.print("Ingrese la URL: ");
+                scanner.next();
+
+                println("\n");
+
+                System.out.print("¿Cuantos generos tiene la pelicula? ");
+                int cantGeneros = scanner.nextInt();
+                println("\n");
+                for(int i = 0; i < cantGeneros; i++) {
+                    System.out.print("Ingrese genero #" + i + ": ");
+                    generos.add(scanner.next());
+                    println("\n");
+                }
+
+                println("Ahora coloque la imagen de la Pelicula en " + ArchivosConverter.RUTA_DE_ARCHIVOS);
+                println("Una vez que la coloco ahi, escriba el nombre del archivo con su extension ejemplo mi_imagen.jpg");
+                System.out.print("Nombre del archivo: ");
+                imagen = new File(ArchivosConverter.RUTA_DE_ARCHIVOS + scanner.next());
+                if(!imagen.exists()) {
+                    println("La imagen que ingresaste no existe...");
+                } else {
+                    ingresoValoresCorrectamente = true;
+                }
+            } catch (InputMismatchException exception) {
+                println("Ingresaste un valor incorrecto, reintetalo...");
+            }
+        } while (!ingresoValoresCorrectamente);
+
+        Pelicula pelicula = new Pelicula(titulo, url, imagen, generos);
+        peliculaService.crearPelicula(pelicula);
+
+        println("Pelicula creada con exito. Pulse una letra para continuar...");
+        scanner.next();
+        scanner.close();
     }
 
 
