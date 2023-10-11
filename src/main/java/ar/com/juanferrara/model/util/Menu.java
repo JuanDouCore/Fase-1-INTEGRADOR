@@ -201,6 +201,31 @@ public class Menu {
      * para eliminar una pelicula
      */
     private void menuEliminarPelicula() {
+        Scanner scanner = new Scanner(System.in);
+        PeliculaService peliculaService = new PeliculaService();
+
+        println("\n\n\n");
+        println("====================================");
+        println("Ingrese el codigo de la pelicula que desea eliminar");
+
+        int codigoPelicula = 0;
+        boolean ingresoCodigoCorrecto = false;
+        do {
+            System.out.print("codigo: ");
+            codigoPelicula = scanner.nextInt();
+        } while (!ingresoCodigoCorrecto);
+
+        Pelicula pelicula = peliculaService.mostrarPelicula(codigoPelicula);
+        if(pelicula!=null) {
+            peliculaService.eliminarPelicula(pelicula);
+            println("Eliminada correctamente...");
+        } else {
+            println("No existe pelicula con este codigo...");
+        }
+
+        println("Pulse una letra para continuar...");
+        scanner.next();
+        scanner.close();
     }
 
     /**
