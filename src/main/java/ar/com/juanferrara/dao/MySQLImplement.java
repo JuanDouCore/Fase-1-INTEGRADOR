@@ -29,12 +29,6 @@ public interface MySQLImplement {
 
         } catch (ClassNotFoundException | SQLException ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
         }
 
 

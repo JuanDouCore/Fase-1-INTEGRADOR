@@ -61,6 +61,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException | FileNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return pelicula;
@@ -98,6 +104,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             ex.printStackTrace();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -134,6 +146,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             ex.printStackTrace();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -157,6 +175,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -194,6 +218,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return peliculas;
@@ -233,6 +263,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return peliculas;
@@ -276,6 +312,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return peliculas;
@@ -309,6 +351,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return generos;
@@ -336,6 +384,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -352,6 +406,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -371,6 +431,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
