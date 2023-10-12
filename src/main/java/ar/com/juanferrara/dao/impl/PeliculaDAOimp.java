@@ -216,6 +216,12 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
         return peliculas;
     }
