@@ -7,11 +7,7 @@ import java.util.List;
 
 public class PeliculaService {
 
-    private final PeliculaDAOimp peliculaDAOimp;
-
-    public PeliculaService() {
-        this.peliculaDAOimp = new PeliculaDAOimp();
-    }
+    private PeliculaDAOimp peliculaDAOimp;
 
     public void crearPelicula(Pelicula pelicula) {
         peliculaDAOimp.insertar(pelicula);
@@ -30,7 +26,8 @@ public class PeliculaService {
     }
 
     public List<Pelicula> listarTodasPeliculas() {
-        return peliculaDAOimp.listarTodos();
+        PeliculaDAOimp dao = new PeliculaDAOimp();
+        return dao.listarTodos();
     }
 
     public List<Pelicula> buscarPorCriterio(String criterio, String valor) {

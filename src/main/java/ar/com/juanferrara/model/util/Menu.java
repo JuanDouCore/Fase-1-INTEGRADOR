@@ -15,17 +15,22 @@ import java.util.Scanner;
  */
 public class Menu {
 
+    private Scanner scanner;
+    public Menu() {
+        this.scanner = new Scanner(System.in);
+    }
+
     /**
      * Metodo principal para inciar el menù
      */
     public void lanzarMenuPrincipal() {
-        mostrarMenuPrincipal();
         int opcion = 1;
 
         do {
+            mostrarMenuPrincipal();
             System.out.println("");
             System.out.print("Ingrese opcion: ");
-            Scanner scanner = new Scanner(System.in);
+            scanner = new Scanner(System.in);
 
             boolean ingresoNumero = false;
             try {
@@ -79,7 +84,7 @@ public class Menu {
      * de listar peliculas
      */
     private void menuListarPeliculas() {
-        Scanner scanner = new Scanner(System.in);
+        scanner = new Scanner(System.in);
         PeliculaService peliculaService = new PeliculaService();
 
         println("\n\n\n");
@@ -88,9 +93,8 @@ public class Menu {
         println("CODIGO | TITULO | URL");
         peliculaService.listarTodasPeliculas().forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo() + " | " + pelicula.getUrl()));
         println("====================================");
-        System.out.println("Pulse una letra para continuar..");
-        scanner.next();
-        scanner.close();
+        System.out.println("Pulse ENTER para continuar..");
+        scanner.nextLine();
     }
 
     /**
@@ -134,8 +138,9 @@ public class Menu {
         if (opcion == 1) {
             println("====================================");
             println("Listado peliculas que coincidan con el titulo : " + valor);
-            if(!peliculaService.buscarPorCriterio("TITULO",valor).isEmpty()) {
-                peliculaService.buscarPorCriterio("TITULO",valor).forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo()));
+            List<Pelicula> peliculas = peliculaService.buscarPorCriterio("TITULO",valor);
+            if(!peliculas.isEmpty()) {
+                peliculas.forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo()));
             } else {
                 println("No se encontraron peliculas con este titulo.");
             }
@@ -143,8 +148,9 @@ public class Menu {
         } else if(opcion == 2) {
             println("====================================");
             println("Listado peliculas que coincidan con el genero : " + valor);
-            if(!peliculaService.buscarPorCriterio("GENERO",valor).isEmpty()) {
-                peliculaService.buscarPorCriterio("GENERO",valor).forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo()));
+            List<Pelicula> peliculas = peliculaService.buscarPorCriterio("GENERO",valor);
+            if(!peliculas.isEmpty()) {
+                peliculas.forEach(pelicula -> println(pelicula.getCodigo() + " | " + pelicula.getTitulo()));
             } else {
                 println("No se encontraron peliculas con este genero.");
             }
@@ -185,7 +191,7 @@ public class Menu {
             } while (!codigoCorrectoPeliculaBuscar);
         }
 
-        println("\n\n Pulse una letra para continuar...");
+        println("\n\n Pulse ENTER para continuar...");
         scanner.next();
         scanner.close();
     }
@@ -257,7 +263,7 @@ public class Menu {
             println("No existe pelicula con este codigo...");
         }
 
-        println("Pulse una letra para continuar...");
+        println("Pulse ENTER para continuar...");
         scanner.next();
         scanner.close();
     }
@@ -289,7 +295,7 @@ public class Menu {
             println("No existe pelicula con este codigo...");
         }
 
-        println("Pulse una letra para continuar...");
+        println("Pulse ENTER para continuar...");
         scanner.next();
         scanner.close();
     }
@@ -351,7 +357,7 @@ public class Menu {
         Pelicula pelicula = new Pelicula(titulo, url, imagen, generos);
         peliculaService.crearPelicula(pelicula);
 
-        println("Pelicula creada con exito. Pulse una letra para continuar...");
+        println("Pelicula creada con exito. Pulse ENTER para continuar...");
         scanner.next();
         scanner.close();
     }

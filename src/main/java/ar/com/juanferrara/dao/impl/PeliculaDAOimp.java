@@ -43,7 +43,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
                 File imagen = new File(ArchivosConverter.RUTA_DE_ARCHIVOS + titulo + ".jpg" );
-                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
+                List<String> generos = obtenerGenerosDePelicula(codigo);
 
                 Blob imagenBlob = resultSet.getBlob("imagen");
                 InputStream inputStream = imagenBlob.getBinaryStream();
@@ -54,8 +54,6 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
                 pelicula = new Pelicula(codigo, titulo, url, imagen, generos);
 
-                resultSet.close();
-                preparedStatement.close();
             }
 
             preparedStatement.close();
@@ -98,8 +96,6 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 if(resultSet.next())
                     insertarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
 
-
-                resultSet.close();
             }
 
             preparedStatement.close();
@@ -142,7 +138,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 if(resultSet.next())
                     modificarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
 
-                resultSet.close();
+
             }
 
             preparedStatement.close();
@@ -204,32 +200,23 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             Statement preparedStatement = connection.createStatement();
 
             ResultSet resultSet = preparedStatement.executeQuery(sentenceSQL);
+            resultSet.isClosed();
 
             while (resultSet.next()) {
                 int codigo = resultSet.getInt("codigo");
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
 
-                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
-
+                List<String> generos = obtenerGenerosDePelicula(codigo);
 
                 peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
 
-                resultSet.close();
-                preparedStatement.close();
             }
 
-            preparedStatement.close();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
         }
-
         return peliculas;
     }
 
@@ -249,20 +236,20 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
             preparedStatement.setString(1, tituloDeBusqueda);
 
-            ResultSet resultSet = preparedStatement.getResultSet();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int codigo = resultSet.getInt("codigo");
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
 
-                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
+                List<String> generos = obtenerGenerosDePelicula(codigo);
 
                 peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
 
-                resultSet.close();
-                preparedStatement.close();
+
             }
+
 
             preparedStatement.close();
         } catch (SQLException e) {
@@ -298,20 +285,20 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
             preparedStatement.setString(1, genero);
 
-            ResultSet resultSet = preparedStatement.getResultSet();
+            ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 int codigo = resultSet.getInt("codigo");
                 String titulo = resultSet.getString("titulo");
                 String url = resultSet.getString("url");
 
-                List<String> generos = obtenerGenerosDePelicula(codigo, connection);
+                List<String> generos = obtenerGenerosDePelicula(codigo);
 
                 peliculas.add(new Pelicula(codigo, titulo, url, null, generos));
 
-                resultSet.close();
-                preparedStatement.close();
+
             }
+
 
             preparedStatement.close();
         } catch (SQLException e) {
@@ -334,7 +321,8 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
      * @param connection
      * @return
      */
-    private List<String> obtenerGenerosDePelicula(int codigo, Connection connection) {
+    private List<String> obtenerGenerosDePelicula(int codigo) {
+        Connection connection = getConnection();
         List<String> generos = new ArrayList<>();
 
         String generosSQL = "SELECT genero FROM generos_pelicula WHERE codigo_pelicula = ?;";
@@ -350,7 +338,6 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 generos.add(genero);
             }
 
-            generosResultSet.close();
             generosStatement.close();
 
         } catch (SQLException ex) {
