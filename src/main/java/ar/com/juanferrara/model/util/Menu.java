@@ -102,7 +102,6 @@ public class Menu {
      * de busqueda de peliculas
      */
     private void menuBuscarPelicula() {
-        Scanner scanner = new Scanner(System.in);
         PeliculaService peliculaService = new PeliculaService();
 
         println("\n\n\n");
@@ -114,25 +113,28 @@ public class Menu {
 
         String valor = "";
         boolean ingresoOpcionCorrecta = false;
-        int opcion = 1;
+        int opcion = -1;
         do {
             System.out.print("Ingrese una opcion: ");
             try {
                 opcion = scanner.nextInt();
+                scanner.nextLine();
+
                 if(opcion == 1) {
-                    println("\n");
                     System.out.print("Ingrese el titulo: ");
                     valor = scanner.nextLine();
 
                     ingresoOpcionCorrecta = true;
-                } else {
-                    println("\n");
+                } else if(opcion == 2){
                     System.out.print("Ingrese el genero: ");
                     valor = scanner.next();
 
                     ingresoOpcionCorrecta = true;
                 }
-            } catch (InputMismatchException ignored) {}
+            } catch (InputMismatchException exception) {
+                System.out.println("Opcion incorrecta....");
+                scanner.nextLine();
+            }
         } while (!ingresoOpcionCorrecta);
 
         if (opcion == 1) {
@@ -157,7 +159,6 @@ public class Menu {
             println("====================================");
         }
 
-        println("\n");
         println("Desea ver la informacion de una pelicula?");
 
         String opcionDeseaBuscar = "no";
@@ -165,35 +166,38 @@ public class Menu {
         do {
             System.out.print("Ingrese si/no: ");
             opcionDeseaBuscar = scanner.next();
-            if(opcionDeseaBuscar == "si" || opcionDeseaBuscar == "no")
+            if(opcionDeseaBuscar.equals("si") || opcionDeseaBuscar.equals("no"))
                 opcionCorrectaDeseaBuscar = true;
         } while (!opcionCorrectaDeseaBuscar);
 
-        if(opcionDeseaBuscar == "si") {
+        if(opcionDeseaBuscar.equals("si")) {
             boolean codigoCorrectoPeliculaBuscar = false;
             do {
-                println("\n");
                 System.out.print("Ingrese codigo: ");
+                scanner.nextLine();
                 try {
                     int codigoPelicula = scanner.nextInt();
 
                     Pelicula pelicula = peliculaService.mostrarPelicula(codigoPelicula);
                     if(pelicula != null) {
+                        println("\n");
                         println("CODIGO: " + pelicula.getCodigo());
                         println("TITULO: " + pelicula.getTitulo());
                         println("URL: " + pelicula.getUrl());
                         println("GENEROS: " + pelicula.getGenerosConFormato());
                         println("IMAGEN ALOJADA EN: " + pelicula.getImagen().getPath());
+                        scanner.nextLine();
+                        codigoCorrectoPeliculaBuscar = true;
                     } else {
                         println("No existe pelicula con este codigo:");
+                        scanner.nextLine();
                     }
                 } catch (InputMismatchException ignored) {}
             } while (!codigoCorrectoPeliculaBuscar);
         }
 
-        println("\n\n Pulse ENTER para continuar...");
-        scanner.next();
-        scanner.close();
+        println("\n Pulse ENTER para continuar...");
+        scanner.nextLine();
     }
 
     /**
@@ -212,7 +216,13 @@ public class Menu {
         boolean ingresoCodigoCorrecto = false;
         do {
             System.out.print("codigo: ");
-            codigoPelicula = scanner.nextInt();
+            try {
+                codigoPelicula = scanner.nextInt();
+                ingresoCodigoCorrecto = true;
+            } catch (InputMismatchException exception) {
+                println("Ingrese un codigo correct...");
+                scanner.nextLine();
+            }
         } while (!ingresoCodigoCorrecto);
 
         Pelicula pelicula = peliculaService.mostrarPelicula(codigoPelicula);
@@ -221,6 +231,8 @@ public class Menu {
             do {
                 try {
                     println("\n");
+
+                    scanner.nextLine();
 
                     println("Titulo actual: " + pelicula.getTitulo());
                     System.out.print("Ingrese titulo nuevo: ");
@@ -234,10 +246,10 @@ public class Menu {
                     System.out.print("¿Cuantos generos tiene ahora la pelicula? ");
                     List<String> generos = new ArrayList<>();
                     int cantGeneros = scanner.nextInt();
-                    println("\n");
+                    scanner.nextLine();
                     for(int i = 0; i < cantGeneros; i++) {
-                        System.out.print("Ingrese genero #" + i + ": ");
-                        generos.add(scanner.next());
+                        System.out.print("Ingrese genero #" + (i+1) + ": ");
+                        generos.add(scanner.nextLine());
                         println("\n");
                     }
                     pelicula.setGeneros(generos);
@@ -263,9 +275,9 @@ public class Menu {
             println("No existe pelicula con este codigo...");
         }
 
+        scanner.nextLine();
         println("Pulse ENTER para continuar...");
-        scanner.next();
-        scanner.close();
+        scanner.nextLine();
     }
 
     /**
@@ -284,7 +296,13 @@ public class Menu {
         boolean ingresoCodigoCorrecto = false;
         do {
             System.out.print("codigo: ");
-            codigoPelicula = scanner.nextInt();
+            try {
+                codigoPelicula = scanner.nextInt();
+                ingresoCodigoCorrecto = true;
+            } catch (InputMismatchException exception) {
+                println("Ingresa un codigo correcto...");
+                scanner.nextLine();
+            }
         } while (!ingresoCodigoCorrecto);
 
         Pelicula pelicula = peliculaService.mostrarPelicula(codigoPelicula);
@@ -295,9 +313,9 @@ public class Menu {
             println("No existe pelicula con este codigo...");
         }
 
+        scanner.nextLine();
         println("Pulse ENTER para continuar...");
-        scanner.next();
-        scanner.close();
+        scanner.nextLine();
     }
 
     /**
@@ -319,25 +337,20 @@ public class Menu {
 
         boolean ingresoValoresCorrectamente = false;
         do {
-            println("\n");
             try {
                 System.out.print("Ingrese el titulo: ");
                 titulo = scanner.nextLine();
 
-                println("\n");
-
                 System.out.print("Ingrese la URL: ");
                 url = scanner.next();
 
-                println("\n");
 
                 System.out.print("¿Cuantos generos tiene la pelicula? ");
                 int cantGeneros = scanner.nextInt();
-                println("\n");
+                scanner.nextLine();
                 for(int i = 0; i < cantGeneros; i++) {
-                    System.out.print("Ingrese genero #" + i + ": ");
-                    generos.add(scanner.next());
-                    println("\n");
+                    System.out.print("Ingrese genero #" + (i+1) + ": ");
+                    generos.add(scanner.nextLine());
                 }
 
                 println("Ahora coloque la imagen de la Pelicula en " + ArchivosConverter.RUTA_DE_ARCHIVOS);
@@ -346,20 +359,22 @@ public class Menu {
                 imagen = new File(ArchivosConverter.RUTA_DE_ARCHIVOS + scanner.next());
                 if(!imagen.exists()) {
                     println("La imagen que ingresaste no existe...");
+                    scanner.nextLine();
                 } else {
                     ingresoValoresCorrectamente = true;
                 }
             } catch (InputMismatchException exception) {
                 println("Ingresaste un valor incorrecto, reintetalo...");
+                scanner.nextLine();
             }
         } while (!ingresoValoresCorrectamente);
 
         Pelicula pelicula = new Pelicula(titulo, url, imagen, generos);
         peliculaService.crearPelicula(pelicula);
 
+        scanner.nextLine();
         println("Pelicula creada con exito. Pulse ENTER para continuar...");
-        scanner.next();
-        scanner.close();
+        scanner.nextLine();
     }
 
 
