@@ -94,7 +94,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
                 if(resultSet.next())
-                    insertarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+                    insertarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1));
 
             }
 
@@ -136,7 +136,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
 
                 if(resultSet.next())
-                    modificarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1), connection);
+                    modificarGenerosDePelicula(pelicula.getGeneros(), resultSet.getInt(1));
 
 
             }
@@ -170,7 +170,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
             preparedStatement.setInt(1, codigo);
 
             preparedStatement.execute();
-            eliminarGenerosDePelicula(codigo, connection);
+            eliminarGenerosDePelicula(codigo);
 
             preparedStatement.close();
         } catch (SQLException ex) {
@@ -231,10 +231,10 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
         Connection connection = getConnection();
 
-        String sentenceSQL = "SELECT codigo, titulo, url FROM peliculas;";
+        String sentenceSQL = "SELECT codigo, titulo, url FROM peliculas WHERE titulo LIKE ?;";
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(sentenceSQL);
-            preparedStatement.setString(1, tituloDeBusqueda);
+            preparedStatement.setString(1, "%"+ tituloDeBusqueda + "%");
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -318,7 +318,6 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
     /**
      * Devuelve una lista de todos los generos de una Pelicula
      * @param codigo
-     * @param connection
      * @return
      */
     private List<String> obtenerGenerosDePelicula(int codigo) {
@@ -357,9 +356,9 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
      * Inserta en otra tabla los generos especificos que tiene una pelicula
      * @param generos
      * @param codigoPelicula
-     * @param connection
      */
-    private void insertarGenerosDePelicula(List<String> generos, int codigoPelicula, Connection connection) {
+    private void insertarGenerosDePelicula(List<String> generos, int codigoPelicula) {
+        Connection connection = getConnection();
         String insertGenerosSQL = "INSERT INTO generos_pelicula (codigo_pelicula, genero) VALUES (?, ?);";
 
         try {
@@ -385,7 +384,8 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
         }
     }
 
-    private void modificarGenerosDePelicula(List<String> generos, int codigoPelicula, Connection connection) {
+    private void modificarGenerosDePelicula(List<String> generos, int codigoPelicula) {
+        Connection connection = getConnection();
         String deleteGenerosSQL = "DELETE FROM generos_pelicula WHERE codigo_pelicula = codigoPelicula;";
 
         try {
@@ -393,7 +393,7 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
 
             preparedStatement.execute();
 
-            insertarGenerosDePelicula(generos, codigoPelicula, connection);
+            insertarGenerosDePelicula(generos, codigoPelicula);
 
             preparedStatement.close();
         } catch (SQLException ex) {
@@ -410,10 +410,10 @@ public class PeliculaDAOimp implements DAO<Pelicula, Integer>, MySQLImplement {
     /**
      * Elimina todos los generos de una pelicula
      * @param codigoPelicula
-     * @param connection
      */
-    private void eliminarGenerosDePelicula(int codigoPelicula, Connection connection) {
-        String deleteGenerosSQL = "DELETE FROM generos_peliculas WHERE codigo_pelicula = "+codigoPelicula+";";
+    private void eliminarGenerosDePelicula(int codigoPelicula) {
+        Connection connection = getConnection();
+        String deleteGenerosSQL = "DELETE FROM generos_pelicula WHERE codigo_pelicula = "+codigoPelicula+";";
 
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(deleteGenerosSQL);
