@@ -23,7 +23,8 @@ Descarga el script de la base de datos del programa desde [aquí](https://www.me
 
 ## Diagrama de clases
 Aqui se presenta el diagrama de clases del proyecto
-![integrador 1 Class diagram](https://github.com/JuanDouCore/Fase-1-INTEGRADOR/assets/22947314/73b1af39-d819-4216-9ab5-e0a41cef77c2)
+![integrador 1 Class diagram](https://github.com/JuanDouCore/Fase-1-INTEGRADOR/assets/22947314/ad4f45da-dcb1-4a7a-a5a3-8e93fb077c14)
+
 
 ## Diagrama de Secuencias
 Aqui se representa un diagrama de secuencias para la busqueda de una pelicula por su genero o titulo
